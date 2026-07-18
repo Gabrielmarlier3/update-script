@@ -227,7 +227,8 @@ main() {
     done
 
     sudo -v || exit 1
-    { while sudo -n true 2>/dev/null; do sleep 50; done; } &
+    # sudo -n -v renova o timestamp sem executar comando (use_pty quebra sudo em background)
+    { while kill -0 "$$" 2>/dev/null; do sudo -n -v 2>/dev/null; sleep 50; done; } &
     SUDO_KEEPALIVE_PID=$!
     trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
     trap 'exit 130' INT
